@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace BenMakesGames.Random;
 
@@ -115,7 +116,7 @@ public static class RandomExtensions
     }
 
     public static int GetInt(this IRandom random)
-        => (int)random.GetUInts(1)[0] & ~(1 << 31);
+        => MemoryMarshal.Read<int>(random.GetBytes(8)) & ~(1 << 31);
 
     public static int GetInt(this IRandom random, int min, int exclusiveMax)
     {

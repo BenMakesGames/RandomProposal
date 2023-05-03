@@ -7,11 +7,13 @@ namespace BenMakesGames.Random;
 /// NES game Final Fantasy 1, which used these values to determine when "random" enemy encounters should occur.
 ///
 /// Example use: creating a more speed-runner friendly game by incorporating intentionally-exploitable RNG.
+///
+/// Distinguishing properties:
+/// * Uses a lookup table to generate random bytes
 /// </summary>
 public sealed class FF1Random: IRandom
 {
-    public static int DefaultByteSize => 1;
-    public static IRandom Shared { get; } = new FF1Random();
+    public static IRandom Shared => new FF1Random();
 
     private int Index;
 

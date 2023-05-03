@@ -4,21 +4,24 @@ using BenchmarkDotNet.Attributes;
 namespace BenMakesGames.Random.Performance;
 
 /**
- * 2023-03-03, 5:29PM 
- *  |                          Method |      Mean |    Error |   StdDev |
- *  |-------------------------------- |----------:|---------:|---------:|
- *  |     XorShift256ImplGet1000Bytes | 166.47 ns | 0.872 ns | 0.773 ns |
- *  |       FF1RandomImplGet1000Bytes |  57.04 ns | 1.018 ns | 0.850 ns |
- *  | Squirrel3RandomImplGet1000Bytes | 231.06 ns | 2.352 ns | 2.200 ns |
- *  |        SystemRandomGet1000Bytes | 156.53 ns | 0.609 ns | 0.570 ns |
+ * 2023-05-03, 0:32 UTC
+ * |---------------------------------------------- |------------:|----------:|----------:|
+ * |                   XorShift256ImplGet1000Bytes |   173.48 ns |  1.813 ns |  1.695 ns |
+ * |                     FF1RandomImplGet1000Bytes |    57.88 ns |  0.940 ns |  0.785 ns |
+ * |                  TetrisRandomImplGet1000Bytes | 1,680.28 ns | 11.841 ns | 10.497 ns |
+ * |               Squirrel3RandomImplGet1000Bytes |   368.98 ns |  4.939 ns |  4.620 ns |
+ * |                  BCryptRandomImplGet1000Bytes |   651.76 ns | 11.480 ns | 10.738 ns |
+ * |                      SystemRandomGet1000Bytes |   162.63 ns |  1.635 ns |  1.449 ns |
+ * | CryptographyRandomNumberGeneratorGet1000Bytes |   659.03 ns |  5.031 ns |  4.706 ns |
  */
 public class FillBytesBenchmarks
 {
-    private static IRandom XorShift256Impl { get; } = XorShift256Random.Shared;
-    private static IRandom FF1RandomImpl { get; } = FF1Random.Shared;
-    private static IRandom Squirrel3RandomImpl { get; } = Squirrel3Random.Shared;
-    private static IRandom BCryptRandomImpl { get; } = BCryptRandom.Shared;
-    private static System.Random SystemRandom { get; } = System.Random.Shared;
+    private static readonly IRandom XorShift256Impl = XorShift256Random.Shared;
+    private static readonly IRandom FF1RandomImpl = FF1Random.Shared;
+    private static readonly IRandom TetrisRandomImpl = TetrisRandom.Shared;
+    private static readonly IRandom Squirrel3RandomImpl = Squirrel3Random.Shared;
+    private static readonly IRandom BCryptRandomImpl = BCryptRandom.Shared;
+    private static readonly System.Random SystemRandom = System.Random.Shared;
 
     public byte[] buffer = new byte[1000];
     
@@ -38,6 +41,14 @@ public class FillBytesBenchmarks
         return buffer;
     }
     
+    [Benchmark]
+    public Span<byte> TetrisRandomImplGet1000Bytes()
+    {
+        TetrisRandomImpl.FillBytes(buffer);
+
+        return buffer;
+    }
+
     [Benchmark]
     public Span<byte> Squirrel3RandomImplGet1000Bytes()
     {

@@ -4,23 +4,25 @@ using BenchmarkDotNet.Attributes;
 namespace BenMakesGames.Random.Performance;
 
 /**
- * 2021-03-03, 5:52PM
- *  |                                       Method |      Mean |    Error |   StdDev |
- *  |--------------------------------------------- |----------:|---------:|---------:|
- *  |            XorShift256ImplWrapperGet1000Ints |  30.20 us | 0.516 us | 0.483 us |
- *  |                     FF1RandomImplGet1000Ints |  24.07 us | 0.468 us | 0.415 us |
- *  |               Squirrel3RandomImplGet1000Ints |  35.88 us | 0.699 us | 0.620 us |
- *  |                  BCryptRandomImplGet1000Ints | 158.62 us | 2.342 us | 2.076 us |
- *  |                      SystemRandomGet1000Ints |  18.09 us | 0.075 us | 0.067 us |
- *  | CryptographyRandomNumberGeneratorGet1000Ints | 146.15 us | 2.273 us | 2.126 us |
+ * 2023-05-03, 01:11 UTC
+ * |                                       Method |       Mean |     Error |    StdDev |
+ * |--------------------------------------------- |-----------:|----------:|----------:|
+ * |            XorShift256ImplWrapperGet1000Ints |  31.449 us | 0.3424 us | 0.3036 us |
+ * |                     FF1RandomImplGet1000Ints |  25.479 us | 0.1812 us | 0.1607 us |
+ * |                  TetrisRandomImplGet1000Ints |  30.972 us | 0.2292 us | 0.1914 us |
+ * |               Squirrel3RandomImplGet1000Ints |  23.561 us | 0.3020 us | 0.2522 us |
+ * |                  BCryptRandomImplGet1000Ints | 156.154 us | 1.0611 us | 0.8861 us |
+ * |                      SystemRandomGet1000Ints |   7.989 us | 0.0914 us | 0.0810 us |
+ * | CryptographyRandomNumberGeneratorGet1000Ints | 145.993 us | 1.3334 us | 1.1820 us |
  */
 public class GetIntWithMaxBenchmarks
 {
-    private static IRandom XorShift256Impl { get; } = XorShift256Random.Shared;
-    private static IRandom FF1RandomImpl { get; } = FF1Random.Shared;
-    private static IRandom Squirrel3RandomImpl { get; } = Squirrel3Random.Shared;
-    private static IRandom BCryptRandomImpl { get; } = BCryptRandom.Shared;
-    private static System.Random SystemRandom { get; } = System.Random.Shared;
+    private static readonly IRandom XorShift256Impl = XorShift256Random.Shared;
+    private static readonly IRandom FF1RandomImpl = FF1Random.Shared;
+    private static readonly IRandom TetrisRandomImpl = TetrisRandom.Shared;
+    private static readonly IRandom Squirrel3RandomImpl = Squirrel3Random.Shared;
+    private static readonly IRandom BCryptRandomImpl = BCryptRandom.Shared;
+    private static readonly System.Random SystemRandom = System.Random.Shared;
 
     [Benchmark]
     public void XorShift256ImplWrapperGet1000Ints()
@@ -36,6 +38,13 @@ public class GetIntWithMaxBenchmarks
             FF1RandomImpl.GetInt(20000);
     }
     
+    [Benchmark]
+    public void TetrisRandomImplGet1000Ints()
+    {
+        for(int i = 0; i < 1000; i++)
+            TetrisRandomImpl.GetInt(20000);
+    }
+
     [Benchmark]
     public void Squirrel3RandomImplGet1000Ints()
     {

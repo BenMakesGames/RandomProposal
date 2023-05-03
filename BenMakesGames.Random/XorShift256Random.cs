@@ -13,11 +13,14 @@ namespace BenMakesGames.Random;
 /// CPU usage to a minimum.
 ///
 /// This RNG is NOT suitable for use by cryptographic methods, or other contexts where security is a priority. Use
-/// .NET's built-in RandomNumberGenerator, instead. 
+/// .NET's built-in RandomNumberGenerator, instead.
+///
+/// Distinguishing properties:
+/// * Very modern implementation of a Linear Feedback Shift Register with a good balance of performance
 /// </summary>
 public sealed class XorShift256Random: IRandom
 {
-    public static IRandom Shared { get; } = new XorShift256Random();
+    public static IRandom Shared => new XorShift256Random();
 
     public unsafe void FillBytes(Span<byte> buffer)
     {
