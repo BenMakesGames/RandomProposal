@@ -15,10 +15,10 @@ To solve the issues above, I propose a single interface - `IRandom` - which requ
 
 From a developer's point of view, `System.Random` and `Cryptography.RandomNumberGenerator` would each gain (most of) the methods of the other. Existing code continues to work as always. However, package writers would be able to write extensions on `IRandom` to buff all implementations, and write new implementations of `IRandom` without giving up the BCL RNG methods they know and love.
 
-### Work to Do (as of 2023-03-03)
+### Work to Do (as of 2023-05-03)
 
-* `System.Random` and `Cryptography.RandomNumberGenerator` have slightly different implementations of a "get int within range" method. Need to check if this difference is significant (both appear to be doing extra work to get even distributions of numbers).
-* The "get int" method in this proposal is slightly slower; compared to `Cryptography.RandomNumberGenerator`, the difference is negligible; compared to `System.Random`, however,  it's almost half the speed!
-* This repo contains 4 RNGs, including the two that are intended to replace `System.Random` and `Cryptography.RandomNumberGenerator`. I'd like to run them ALL the RNGs through TestU01 (see https://stackoverflow.com/questions/65403695/how-to-run-testu01-to-test-a-random-number-generator), partially just for my amusement (the `FF1Random` RNG is sure to fail hard), but also to make sure I haven't screwed something up :P
-* The API I've written so far is not like `System.Random` or `Cryptography.RandomNumberGenerator`. I need to pick a naming style, go with it, and then write pass-thrus for backwards compatibility.
-* It'd be interesting to add methods from Unity and/or Godot, like Unity's `insideUnitCircle`.
+* The original `System.Random` and `Cryptography.RandomNumberGenerator` have slightly different implementations of a "get int within range" method. My implementation uses one method for both, so I need to check if this difference is significant (both appear to be doing extra work to get even distributions of numbers, which my implementation also does).
+* For filling bytes, my implementations are very close in speed to  `Cryptography.RandomNumberGenerator `and `System.Random`; however for common number generation functions, my reimplementation of System.Random is about 1/4 speed. The speeds are still crazy-fast, but I expect telling someone "it's 1/4 as fast, though" will not go down well.
+* This repo contains 5 RNGs that demonstrate a variety of RNG algorithms, including the two that are intended to replace `System.Random` and `Cryptography.RandomNumberGenerator`. I'd like to run them ALL the RNGs through TestU01 (see https://stackoverflow.com/questions/65403695/how-to-run-testu01-to-test-a-random-number-generator), partially just for my amusement (the `FF1Random` and `TetrisRandom` RNGs are sure to fail hard), but also to make sure I haven't screwed something up :P
+* The API I've written so far is not like `System.Random` or `Cryptography.RandomNumberGenerator`. I need to pick a naming style, go with it, and then write pass-thrus for backwards compatibility. (The chosen naming style should minimize the number of pass-thrus needed.)
+* I'm interested to add extension methods inspired by Unity and/or Godot, such as Unity's `insideUnitCircle`.
